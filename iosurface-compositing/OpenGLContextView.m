@@ -53,7 +53,9 @@
 }
 
 - (void)drawRect:(NSRect)dirtyRect {
-    [[[NSGradient alloc] initWithColors:@[NSColor.whiteColor, NSColor.blackColor]] drawInRect:self.bounds angle:-45];
+    NSGradient* gradient = [[NSGradient alloc] initWithColors:@[NSColor.whiteColor, NSColor.blackColor]];
+    [gradient drawInRect:self.bounds angle:-45];
+    [gradient release];
 }
 
 @end
