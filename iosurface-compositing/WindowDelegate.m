@@ -8,6 +8,11 @@
 
 #import "WindowDelegate.h"
 
+@interface WindowDelegate ()
+
+@property IBOutlet NSWindow *window;
+@end
+
 @implementation WindowDelegate
 
 - (void)windowWillClose:(NSNotification*)notification

@@ -16,6 +16,7 @@
 		DFE2E3BB1FEBD8A20075E196 /* Cocoa.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = DFE2E3BA1FEBD8A20075E196 /* Cocoa.framework */; };
 		DFE2E3BD1FEBD8A90075E196 /* OpenGL.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = DFE2E3BC1FEBD8A90075E196 /* OpenGL.framework */; };
 		DFE2E3C51FEBDEB90075E196 /* WindowDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = DFE2E3C41FEBDEB90075E196 /* WindowDelegate.m */; };
+		DFE2E3CD1FEBE2C60075E196 /* OpenGLContextView.m in Sources */ = {isa = PBXBuildFile; fileRef = DFE2E3CC1FEBE2C60075E196 /* OpenGLContextView.m */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -33,6 +34,8 @@
 		DFE2E3BC1FEBD8A90075E196 /* OpenGL.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = OpenGL.framework; path = System/Library/Frameworks/OpenGL.framework; sourceTree = SDKROOT; };
 		DFE2E3C31FEBDEB90075E196 /* WindowDelegate.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = WindowDelegate.h; sourceTree = "<group>"; };
 		DFE2E3C41FEBDEB90075E196 /* WindowDelegate.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = WindowDelegate.m; sourceTree = "<group>"; };
+		DFE2E3CB1FEBE2C60075E196 /* OpenGLContextView.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = OpenGLContextView.h; sourceTree = "<group>"; };
+		DFE2E3CC1FEBE2C60075E196 /* OpenGLContextView.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = OpenGLContextView.m; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -72,6 +75,8 @@
 			children = (
 				DFE2E3A41FEBD87A0075E196 /* AppDelegate.h */,
 				DFE2E3A51FEBD87A0075E196 /* AppDelegate.m */,
+				DFE2E3CB1FEBE2C60075E196 /* OpenGLContextView.h */,
+				DFE2E3CC1FEBE2C60075E196 /* OpenGLContextView.m */,
 				DFE2E3A71FEBD87A0075E196 /* Assets.xcassets */,
 				DFE2E3A91FEBD87A0075E196 /* MainMenu.xib */,
 				DFE2E3C31FEBDEB90075E196 /* WindowDelegate.h */,
@@ -167,6 +172,7 @@
 				DFE2E3AE1FEBD87A0075E196 /* main.m in Sources */,
 				DFE2E3C51FEBDEB90075E196 /* WindowDelegate.m in Sources */,
 				DFE2E3A61FEBD87A0075E196 /* AppDelegate.m in Sources */,
+				DFE2E3CD1FEBE2C60075E196 /* OpenGLContextView.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -291,6 +297,7 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				CLANG_ENABLE_OBJC_ARC = NO;
 				CODE_SIGN_ENTITLEMENTS = "iosurface-compositing/iosurface_compositing.entitlements";
 				CODE_SIGN_STYLE = Automatic;
 				COMBINE_HIDPI_IMAGES = YES;
@@ -306,6 +313,7 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				CLANG_ENABLE_OBJC_ARC = NO;
 				CODE_SIGN_ENTITLEMENTS = "iosurface-compositing/iosurface_compositing.entitlements";
 				CODE_SIGN_STYLE = Automatic;
 				COMBINE_HIDPI_IMAGES = YES;
