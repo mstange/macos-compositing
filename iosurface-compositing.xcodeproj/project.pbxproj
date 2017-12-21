@@ -11,6 +11,11 @@
 		DFE2E3A81FEBD87A0075E196 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = DFE2E3A71FEBD87A0075E196 /* Assets.xcassets */; };
 		DFE2E3AB1FEBD87A0075E196 /* MainMenu.xib in Resources */ = {isa = PBXBuildFile; fileRef = DFE2E3A91FEBD87A0075E196 /* MainMenu.xib */; };
 		DFE2E3AE1FEBD87A0075E196 /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = DFE2E3AD1FEBD87A0075E196 /* main.m */; };
+		DFE2E3B71FEBD8940075E196 /* IOSurface.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = DFE2E3B61FEBD8940075E196 /* IOSurface.framework */; };
+		DFE2E3B91FEBD89C0075E196 /* QuartzCore.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = DFE2E3B81FEBD89C0075E196 /* QuartzCore.framework */; };
+		DFE2E3BB1FEBD8A20075E196 /* Cocoa.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = DFE2E3BA1FEBD8A20075E196 /* Cocoa.framework */; };
+		DFE2E3BD1FEBD8A90075E196 /* OpenGL.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = DFE2E3BC1FEBD8A90075E196 /* OpenGL.framework */; };
+		DFE2E3C51FEBDEB90075E196 /* WindowDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = DFE2E3C41FEBDEB90075E196 /* WindowDelegate.m */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -22,6 +27,12 @@
 		DFE2E3AC1FEBD87A0075E196 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		DFE2E3AD1FEBD87A0075E196 /* main.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = main.m; sourceTree = "<group>"; };
 		DFE2E3AF1FEBD87A0075E196 /* iosurface_compositing.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = iosurface_compositing.entitlements; sourceTree = "<group>"; };
+		DFE2E3B61FEBD8940075E196 /* IOSurface.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = IOSurface.framework; path = System/Library/Frameworks/IOSurface.framework; sourceTree = SDKROOT; };
+		DFE2E3B81FEBD89C0075E196 /* QuartzCore.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = QuartzCore.framework; path = System/Library/Frameworks/QuartzCore.framework; sourceTree = SDKROOT; };
+		DFE2E3BA1FEBD8A20075E196 /* Cocoa.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Cocoa.framework; path = System/Library/Frameworks/Cocoa.framework; sourceTree = SDKROOT; };
+		DFE2E3BC1FEBD8A90075E196 /* OpenGL.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = OpenGL.framework; path = System/Library/Frameworks/OpenGL.framework; sourceTree = SDKROOT; };
+		DFE2E3C31FEBDEB90075E196 /* WindowDelegate.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = WindowDelegate.h; sourceTree = "<group>"; };
+		DFE2E3C41FEBDEB90075E196 /* WindowDelegate.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = WindowDelegate.m; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -29,6 +40,10 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				DFE2E3BD1FEBD8A90075E196 /* OpenGL.framework in Frameworks */,
+				DFE2E3BB1FEBD8A20075E196 /* Cocoa.framework in Frameworks */,
+				DFE2E3B91FEBD89C0075E196 /* QuartzCore.framework in Frameworks */,
+				DFE2E3B71FEBD8940075E196 /* IOSurface.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -40,6 +55,7 @@
 			children = (
 				DFE2E3A31FEBD87A0075E196 /* iosurface-compositing */,
 				DFE2E3A21FEBD87A0075E196 /* Products */,
+				DFE2E3B51FEBD8930075E196 /* Frameworks */,
 			);
 			sourceTree = "<group>";
 		};
@@ -58,11 +74,24 @@
 				DFE2E3A51FEBD87A0075E196 /* AppDelegate.m */,
 				DFE2E3A71FEBD87A0075E196 /* Assets.xcassets */,
 				DFE2E3A91FEBD87A0075E196 /* MainMenu.xib */,
+				DFE2E3C31FEBDEB90075E196 /* WindowDelegate.h */,
+				DFE2E3C41FEBDEB90075E196 /* WindowDelegate.m */,
 				DFE2E3AC1FEBD87A0075E196 /* Info.plist */,
 				DFE2E3AD1FEBD87A0075E196 /* main.m */,
 				DFE2E3AF1FEBD87A0075E196 /* iosurface_compositing.entitlements */,
 			);
 			path = "iosurface-compositing";
+			sourceTree = "<group>";
+		};
+		DFE2E3B51FEBD8930075E196 /* Frameworks */ = {
+			isa = PBXGroup;
+			children = (
+				DFE2E3BC1FEBD8A90075E196 /* OpenGL.framework */,
+				DFE2E3BA1FEBD8A20075E196 /* Cocoa.framework */,
+				DFE2E3B81FEBD89C0075E196 /* QuartzCore.framework */,
+				DFE2E3B61FEBD8940075E196 /* IOSurface.framework */,
+			);
+			name = Frameworks;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -136,6 +165,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				DFE2E3AE1FEBD87A0075E196 /* main.m in Sources */,
+				DFE2E3C51FEBDEB90075E196 /* WindowDelegate.m in Sources */,
 				DFE2E3A61FEBD87A0075E196 /* AppDelegate.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -266,6 +296,7 @@
 				COMBINE_HIDPI_IMAGES = YES;
 				INFOPLIST_FILE = "iosurface-compositing/Info.plist";
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/../Frameworks";
+				MACOSX_DEPLOYMENT_TARGET = 10.10;
 				PRODUCT_BUNDLE_IDENTIFIER = "org.mozilla.iosurface-compositing";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 			};
@@ -280,6 +311,7 @@
 				COMBINE_HIDPI_IMAGES = YES;
 				INFOPLIST_FILE = "iosurface-compositing/Info.plist";
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/../Frameworks";
+				MACOSX_DEPLOYMENT_TARGET = 10.10;
 				PRODUCT_BUNDLE_IDENTIFIER = "org.mozilla.iosurface-compositing";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 			};
