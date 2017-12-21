@@ -19,7 +19,7 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
-		DFE2E3A11FEBD87A0075E196 /* iosurface-compositing.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "iosurface-compositing.app"; sourceTree = BUILT_PRODUCTS_DIR; };
+		DFE2E3A11FEBD87A0075E196 /* IOSurface compositing.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "IOSurface compositing.app"; sourceTree = BUILT_PRODUCTS_DIR; };
 		DFE2E3A41FEBD87A0075E196 /* AppDelegate.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = AppDelegate.h; sourceTree = "<group>"; };
 		DFE2E3A51FEBD87A0075E196 /* AppDelegate.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = AppDelegate.m; sourceTree = "<group>"; };
 		DFE2E3A71FEBD87A0075E196 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
@@ -62,7 +62,7 @@
 		DFE2E3A21FEBD87A0075E196 /* Products */ = {
 			isa = PBXGroup;
 			children = (
-				DFE2E3A11FEBD87A0075E196 /* iosurface-compositing.app */,
+				DFE2E3A11FEBD87A0075E196 /* IOSurface compositing.app */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -97,9 +97,9 @@
 /* End PBXGroup section */
 
 /* Begin PBXNativeTarget section */
-		DFE2E3A01FEBD87A0075E196 /* iosurface-compositing */ = {
+		DFE2E3A01FEBD87A0075E196 /* IOSurface compositing */ = {
 			isa = PBXNativeTarget;
-			buildConfigurationList = DFE2E3B21FEBD87A0075E196 /* Build configuration list for PBXNativeTarget "iosurface-compositing" */;
+			buildConfigurationList = DFE2E3B21FEBD87A0075E196 /* Build configuration list for PBXNativeTarget "IOSurface compositing" */;
 			buildPhases = (
 				DFE2E39D1FEBD87A0075E196 /* Sources */,
 				DFE2E39E1FEBD87A0075E196 /* Frameworks */,
@@ -109,9 +109,9 @@
 			);
 			dependencies = (
 			);
-			name = "iosurface-compositing";
+			name = "IOSurface compositing";
 			productName = "iosurface-compositing";
-			productReference = DFE2E3A11FEBD87A0075E196 /* iosurface-compositing.app */;
+			productReference = DFE2E3A11FEBD87A0075E196 /* IOSurface compositing.app */;
 			productType = "com.apple.product-type.application";
 		};
 /* End PBXNativeTarget section */
@@ -129,7 +129,7 @@
 					};
 				};
 			};
-			buildConfigurationList = DFE2E39C1FEBD87A0075E196 /* Build configuration list for PBXProject "iosurface-compositing" */;
+			buildConfigurationList = DFE2E39C1FEBD87A0075E196 /* Build configuration list for PBXProject "IOSurface compositing" */;
 			compatibilityVersion = "Xcode 8.0";
 			developmentRegion = en;
 			hasScannedForEncodings = 0;
@@ -142,7 +142,7 @@
 			projectDirPath = "";
 			projectRoot = "";
 			targets = (
-				DFE2E3A01FEBD87A0075E196 /* iosurface-compositing */,
+				DFE2E3A01FEBD87A0075E196 /* IOSurface compositing */,
 			);
 		};
 /* End PBXProject section */
@@ -320,7 +320,7 @@
 /* End XCBuildConfiguration section */
 
 /* Begin XCConfigurationList section */
-		DFE2E39C1FEBD87A0075E196 /* Build configuration list for PBXProject "iosurface-compositing" */ = {
+		DFE2E39C1FEBD87A0075E196 /* Build configuration list for PBXProject "IOSurface compositing" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
 				DFE2E3B01FEBD87A0075E196 /* Debug */,
@@ -329,7 +329,7 @@
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
 		};
-		DFE2E3B21FEBD87A0075E196 /* Build configuration list for PBXNativeTarget "iosurface-compositing" */ = {
+		DFE2E3B21FEBD87A0075E196 /* Build configuration list for PBXNativeTarget "IOSurface compositing" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
 				DFE2E3B31FEBD87A0075E196 /* Debug */,
