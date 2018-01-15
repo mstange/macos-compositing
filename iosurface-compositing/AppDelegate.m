@@ -16,7 +16,7 @@
 @implementation AppDelegate
 
 - (void)applicationDidFinishLaunching:(NSNotification *)aNotification {
-    self.window.titlebarAppearsTransparent = YES;
+//    self.window.titlebarAppearsTransparent = YES;
 }
 
 - (void)applicationWillTerminate:(NSNotification *)aNotification {

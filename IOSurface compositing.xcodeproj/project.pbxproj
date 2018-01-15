@@ -18,6 +18,7 @@
 		DFE2E3C51FEBDEB90075E196 /* WindowDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = DFE2E3C41FEBDEB90075E196 /* WindowDelegate.m */; };
 		DFE2E3CD1FEBE2C60075E196 /* OpenGLContextView.m in Sources */ = {isa = PBXBuildFile; fileRef = DFE2E3CC1FEBE2C60075E196 /* OpenGLContextView.m */; };
 		DFE2E3D01FEBEDB20075E196 /* OpenGLDrawer.m in Sources */ = {isa = PBXBuildFile; fileRef = DFE2E3CF1FEBEDB20075E196 /* OpenGLDrawer.m */; };
+		DFE2E3D31FEC03350075E196 /* VSyncListener.m in Sources */ = {isa = PBXBuildFile; fileRef = DFE2E3D21FEC03350075E196 /* VSyncListener.m */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -39,6 +40,8 @@
 		DFE2E3CC1FEBE2C60075E196 /* OpenGLContextView.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = OpenGLContextView.m; sourceTree = "<group>"; };
 		DFE2E3CE1FEBEDB20075E196 /* OpenGLDrawer.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = OpenGLDrawer.h; sourceTree = "<group>"; };
 		DFE2E3CF1FEBEDB20075E196 /* OpenGLDrawer.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = OpenGLDrawer.m; sourceTree = "<group>"; };
+		DFE2E3D11FEC03350075E196 /* VSyncListener.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = VSyncListener.h; sourceTree = "<group>"; };
+		DFE2E3D21FEC03350075E196 /* VSyncListener.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = VSyncListener.m; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -80,6 +83,8 @@
 				DFE2E3A51FEBD87A0075E196 /* AppDelegate.m */,
 				DFE2E3CB1FEBE2C60075E196 /* OpenGLContextView.h */,
 				DFE2E3CC1FEBE2C60075E196 /* OpenGLContextView.m */,
+				DFE2E3D11FEC03350075E196 /* VSyncListener.h */,
+				DFE2E3D21FEC03350075E196 /* VSyncListener.m */,
 				DFE2E3CE1FEBEDB20075E196 /* OpenGLDrawer.h */,
 				DFE2E3CF1FEBEDB20075E196 /* OpenGLDrawer.m */,
 				DFE2E3A71FEBD87A0075E196 /* Assets.xcassets */,
@@ -177,6 +182,7 @@
 				DFE2E3AE1FEBD87A0075E196 /* main.m in Sources */,
 				DFE2E3C51FEBDEB90075E196 /* WindowDelegate.m in Sources */,
 				DFE2E3D01FEBEDB20075E196 /* OpenGLDrawer.m in Sources */,
+				DFE2E3D31FEC03350075E196 /* VSyncListener.m in Sources */,
 				DFE2E3A61FEBD87A0075E196 /* AppDelegate.m in Sources */,
 				DFE2E3CD1FEBE2C60075E196 /* OpenGLContextView.m in Sources */,
 			);

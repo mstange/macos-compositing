@@ -176,7 +176,7 @@ static const char* kFragmentShader =
     
     glViewport(0, 0, width, height);
     
-    glClearColor(0.0, 1.0, 0.0, 1.0);
+    glClearColor(0.0, 0.0, 0.0, 0.0);
     glClear(GL_COLOR_BUFFER_BIT);
     
     glUseProgram(programID_);

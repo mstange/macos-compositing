@@ -7,10 +7,19 @@
 //
 
 #import <Cocoa/Cocoa.h>
+#import "OpenGLDrawer.h"
+#import "VSyncListener.h"
 
 @interface OpenGLContextView : NSView
 {
     dispatch_queue_t compositingThread_;
     NSOpenGLContext* glContext_;
+    OpenGLDrawer* glDrawer_;
+    VSyncListener* animator_;
+    int displayWidth_;
+    int displayHeight_;
 }
+
+- (instancetype)initWithFrame:(NSRect)frameRect;
+
 @end

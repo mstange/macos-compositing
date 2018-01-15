@@ -20,5 +20,6 @@
 }
 
 - (instancetype)init;
+- (void)drawToFBO:(GLuint)fbo width:(int)width height:(int)height angle:(float)angle;
 
 @end
