@@ -18,38 +18,16 @@
 static IOSurfaceRef
 CreateTransparentIOSurface(int aWidth, int aHeight)
 {
-    IOSurfaceRef surf = IOSurfaceCreate((CFDictionaryRef)@{
-                                                           IOSurfacePropertyKeyWidth: [NSNumber numberWithInt:aWidth],
-                                                           IOSurfacePropertyKeyHeight: [NSNumber numberWithInt:aHeight],
-                                                           IOSurfacePropertyKeyBytesPerElement: [NSNumber numberWithInt:4],
-                                                           IOSurfacePropertyKeyPixelFormat: [NSNumber numberWithInt:'BGRA'],
-                                                           (NSString*)kIOSurfaceIsGlobal: [NSNumber numberWithBool:YES]
-                                                           });
+    NSDictionary* dict = @{
+       IOSurfacePropertyKeyWidth: [NSNumber numberWithInt:aWidth],
+       IOSurfacePropertyKeyHeight: [NSNumber numberWithInt:aHeight],
+       IOSurfacePropertyKeyBytesPerElement: [NSNumber numberWithInt:4],
+       IOSurfacePropertyKeyPixelFormat: [NSNumber numberWithInt:'BGRA'],
+       (NSString*)kIOSurfaceIsGlobal: [NSNumber numberWithBool:YES]
+    };
+    IOSurfaceRef surf = IOSurfaceCreate((CFDictionaryRef)dict);
     NSLog(@"IOSurface: %@", surf);
 
-    IOReturn rv = IOSurfaceLock(surf, 0, nil);
-    if (rv != 0) {
-        NSLog(@"locking the IOSurface failed");
-        return nil;
-    }
-    CGColorSpaceRef rgb = CGColorSpaceCreateDeviceRGB();
-    CGContextRef ctx = CGBitmapContextCreate(IOSurfaceGetBaseAddress(surf),
-                                             IOSurfaceGetWidth(surf), IOSurfaceGetHeight(surf),
-                                             8, IOSurfaceGetBytesPerRow(surf),
-                                             rgb, kCGBitmapByteOrder32Host | kCGImageAlphaPremultipliedFirst);
-    NSLog(@"ctx: %@", ctx);
-    CGColorSpaceRelease(rgb);
-    CGContextClearRect(ctx, CGRectMake(0, 0, aWidth, aHeight));
-    NSGraphicsContext* oldGC = [NSGraphicsContext currentContext];
-    [NSGraphicsContext setCurrentContext:[NSGraphicsContext graphicsContextWithGraphicsPort:ctx flipped:YES]];
-
-    [NSGraphicsContext setCurrentContext:oldGC];
-    CGContextRelease(ctx);
-    rv = IOSurfaceUnlock(surf, 0, nil);
-    if (rv != 0) {
-        NSLog(@"unlocking the IOSurface failed");
-        return nil;
-    }
     return surf;
 }
 
@@ -119,11 +97,15 @@ CreateFBOForTexture(GLuint texture)
 {
     self = [super initWithFrame:frameRect];
 
-    useIOSurf_ = NO;
+    useIOSurf_ = YES;
+    surf_ = NULL;
+    surftex_ = 0;
+    surffbo_ = 0;
+    needsUpdate_ = NO;
 
     self.wantsBestResolutionOpenGLSurface = YES;
 
-    compositingThread_ = dispatch_queue_create("org.mozilla.CompositingThread", NULL);
+    compositingThread_ = dispatch_queue_create("org.mozilla.CompositingThread", DISPATCH_QUEUE_SERIAL);
     glContext_ = [[NSOpenGLContext contextForWindow] retain];
     dispatch_sync(compositingThread_, ^{
         [glContext_ makeCurrentContext];
@@ -132,20 +114,16 @@ CreateFBOForTexture(GLuint texture)
     animator_ = nil;
 
     if (useIOSurf_) {
-        surf_ = CreateTransparentIOSurface(601, 361);
-        surftex_ = CreateTextureForIOSurface([glContext_ CGLContextObj], surf_);
-        surffbo_ = CreateFBOForTexture(surftex_);
         CALayer* layer = [CALayer layer];
-        layer.frame = CGRectMake(0, 0, 601, 361);
-        layer.contentsGravity = kCAGravityBottomLeft;
-        //layer.opaque = YES;
-
+        layer.contentsGravity = kCAGravityTopLeft;
+        layer.contentsScale = 2;
+        // layer.opaque = YES;
+        
         self.wantsLayer = YES;
         self.layer = layer;
     } else {
         self.wantsLayer = NO;
     }
-
     return self;
 }
 
@@ -155,50 +133,27 @@ CreateFBOForTexture(GLuint texture)
         return;
     }
 
-    if (useIOSurf_) {
-        [CATransaction begin];
-        dispatch_sync(compositingThread_, ^{
-            [glContext_ update];
-            NSLog(@"drawing to view: %@", self);
-            [glContext_ makeCurrentContext];
-            [glDrawer_ drawToFBO:surffbo_ width:displayWidth_ height:displayHeight_ angle:CurrentAngle()];
-            [glContext_ flushBuffer];
+    animator_ = [[VSyncListener alloc] initWithCallback:glContext_ callback:^{
+        dispatch_async(compositingThread_, ^{
+            [self compositeOnThisThread];
         });
-        glFlush();
-        self.layer.contents = (id)surf_;
-        [CATransaction commit];
-        [CATransaction flush];
-        animator_ = [[VSyncListener alloc] initWithCallback:glContext_ callback:^{
-            dispatch_async(compositingThread_, ^{
-                [CATransaction begin];
-                [glContext_ update];
-                [glContext_ makeCurrentContext];
-                [glDrawer_ drawToFBO:surffbo_ width:displayWidth_ height:displayHeight_ angle:CurrentAngle()];
-                [glContext_ flushBuffer];
-                glFlush();
-                [self.layer setContentsChanged];
-                //self.layer.contents = (id)surf_;
-                [CATransaction commit];
-                [CATransaction flush];
-            });
-        }];
+    }];
+
+    if (useIOSurf_) {
+        // Make the window's contentView layer-backed. This gives our layer anti-aliased rounded corners.
+        NSView* contentView = [[self window] contentView];
+        contentView.wantsLayer = YES;
     } else {
         [glContext_ setView:self];
-        animator_ = [[VSyncListener alloc] initWithCallback:glContext_ callback:^{
-            dispatch_async(compositingThread_, ^{
-                [glContext_ makeCurrentContext];
-                [glDrawer_ drawToFBO:0 width:displayWidth_ height:displayHeight_ angle:CurrentAngle()];
-                [glContext_ flushBuffer];
-            });
-        }];
     }
+    needsUpdate_ = YES;
 
-    NSLog(@"subscribing to NSViewGlobalFrameDidChangeNotification");
+    NSLog(@"subscribing to NSViewFrameDidChangeNotification");
     [[NSNotificationCenter defaultCenter] addObserver:self
                                              selector:@selector(_surfaceNeedsUpdate:)
-                                                 name:NSViewGlobalFrameDidChangeNotification
+                                                 name:NSViewFrameDidChangeNotification
                                                object:self];
-    [self reshape];
+    [self handleSizeChange];
 }
 
 - (void)viewWillMoveToWindow:(NSWindow *)newWindow
@@ -210,31 +165,93 @@ CreateFBOForTexture(GLuint texture)
     [animator_ release];
     animator_ = nil;
     [[NSNotificationCenter defaultCenter] removeObserver:self
-                                                    name:NSViewGlobalFrameDidChangeNotification
+                                                    name:NSViewFrameDidChangeNotification
                                                   object:self];
 }
 
 - (void)_surfaceNeedsUpdate:(NSNotification*)notification
 {
     NSLog(@"surfaceNeedsUpdate: %@", notification);
-    [self reshape];
+    [self handleSizeChange];
 }
 
 static float CurrentAngle() { return fmod(CFAbsoluteTimeGetCurrent(), 1.0) * 360; }
 
-- (void)reshape
+- (void)handleSizeChange
 {
-    NSLog(@"reshape");
+    NSLog(@"handleSizeChange");
+    layerBounds_ = self.bounds;
     NSSize backingSize = [self convertSizeToBacking:self.bounds.size];
     displayWidth_ = (int)backingSize.width;
     displayHeight_ = (int)backingSize.height;
+    
+    needsUpdate_ = YES;
+    
     dispatch_sync(compositingThread_, ^{
-        [glContext_ update];
-        NSLog(@"drawing to view: %@", self);
+        [self compositeOnThisThreadAfterChange];
+    });
+}
+
+- (void)compositeOnThisThread
+{
+    if (useIOSurf_) {
+        if (!surffbo_) {
+            return;
+        }
+        [CATransaction begin];
+        [glContext_ makeCurrentContext];
+        [glDrawer_ drawToFBO:surffbo_ width:displayWidth_ height:displayHeight_ angle:CurrentAngle()];
+        glFlush();
+        [self.layer setContentsChanged];
+        [CATransaction commit];
+        [CATransaction flush];
+    } else {
         [glContext_ makeCurrentContext];
         [glDrawer_ drawToFBO:0 width:displayWidth_ height:displayHeight_ angle:CurrentAngle()];
         [glContext_ flushBuffer];
-    });
+    }
+}
+
+- (void)compositeOnThisThreadAfterChange
+{
+    if (useIOSurf_) {
+        [glContext_ makeCurrentContext];
+        if (surffbo_) {
+            glDeleteFramebuffers(1, &surffbo_);
+            surffbo_ = 0;
+        }
+        if (surftex_) {
+            glDeleteTextures(1, &surftex_);
+            surftex_ = 1;
+        }
+        if (surf_) {
+            CFRelease(surf_);
+            surf_ = NULL;
+        }
+        surf_ = CreateTransparentIOSurface(displayWidth_, displayHeight_);
+        surftex_ = CreateTextureForIOSurface([glContext_ CGLContextObj], surf_);
+        surffbo_ = CreateFBOForTexture(surftex_);
+        [CATransaction begin];
+        [CATransaction setValue:[NSNumber numberWithBool:YES] forKey:kCATransactionDisableActions];
+        NSLog(@"current thread: %@", [NSThread currentThread]);
+        [glDrawer_ drawToFBO:surffbo_ width:displayWidth_ height:displayHeight_ angle:CurrentAngle()];
+        glFlush();
+        self.layer.contents = (id)surf_;
+//        self.layer.contentsScale = displayWidth_ / layerBounds_.size.width;
+        [CATransaction commit];
+        [CATransaction flush];
+    } else {
+        [glContext_ update];
+        [glContext_ makeCurrentContext];
+        [glDrawer_ drawToFBO:0 width:displayWidth_ height:displayHeight_ angle:CurrentAngle()];
+        [glContext_ flushBuffer];
+    }
+    needsUpdate_ = NO;
+}
+
+- (BOOL)isFlipped
+{
+    return YES;
 }
 
 - (void)dealloc
@@ -252,8 +269,8 @@ static float CurrentAngle() { return fmod(CFAbsoluteTimeGetCurrent(), 1.0) * 360
     NSSize backingSize = [self convertSizeToBacking:self.bounds.size];
     if (displayWidth_ != (int)backingSize.width ||
         displayHeight_ != (int)backingSize.height) {
-        NSLog(@"calling reshape from drawRect");
-        [self reshape];
+        NSLog(@"calling handleSizeChange from drawRect");
+        [self handleSizeChange];
     } else {
         dispatch_sync(compositingThread_, ^{
             NSLog(@"drawing to view inside drawRect: %@", self);

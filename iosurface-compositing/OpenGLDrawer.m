@@ -197,12 +197,12 @@ static const char* kFragmentShader =
     
     glViewport(0, 0, width, height);
     
-    NSRect wholeViewport = { -1, -1, 1, 1 };
+    NSRect wholeViewport = { -1, -1, 2, 2 };
     
-    glClearColor(0.0, 0.0, 1.0, 1.0);
+    glClearColor(0.7, 0.8, 1.0, 1.0);
     glClear(GL_COLOR_BUFFER_BIT);
     
-    glBlendFunc(GL_ONE, GL_ONE_MINUS_SRC_ALPHA);
+    glBlendFuncSeparate(GL_ONE, GL_ONE_MINUS_SRC_ALPHA, GL_ONE, GL_ONE_MINUS_SRC_ALPHA);
     glEnable(GL_BLEND);
 
     glUseProgram(programID_);

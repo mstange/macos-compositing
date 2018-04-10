@@ -18,12 +18,14 @@
     VSyncListener* animator_;
     int displayWidth_;
     int displayHeight_;
+    NSRect layerBounds_;
 
     IOSurfaceRef surf_;
     GLuint surftex_;
     GLuint surffbo_;
 
     BOOL useIOSurf_;
+    BOOL needsUpdate_;
 }
 
 - (instancetype)initWithFrame:(NSRect)frameRect;
