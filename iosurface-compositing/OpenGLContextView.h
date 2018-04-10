@@ -18,6 +18,12 @@
     VSyncListener* animator_;
     int displayWidth_;
     int displayHeight_;
+
+    IOSurfaceRef surf_;
+    GLuint surftex_;
+    GLuint surffbo_;
+
+    BOOL useIOSurf;
 }
 
 - (instancetype)initWithFrame:(NSRect)frameRect;
