@@ -58,7 +58,7 @@
     }
 
     [glContext_ setView:self];
-    animator_ = [[VSyncListener alloc] initWithCallback:^{
+    animator_ = [[VSyncListener alloc] initWithCallback:glContext_ callback:^{
         dispatch_async(compositingThread_, ^{
             [glContext_ makeCurrentContext];
             [glDrawer_ drawToFBO:0 width:displayWidth_ height:displayHeight_ angle:CurrentAngle()];
