@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		2282AEF6207C4949005C6CE1 /* NSWindowSquare.m in Sources */ = {isa = PBXBuildFile; fileRef = 2282AEF5207C4949005C6CE1 /* NSWindowSquare.m */; };
 		DFE2E3A61FEBD87A0075E196 /* AppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = DFE2E3A51FEBD87A0075E196 /* AppDelegate.m */; };
 		DFE2E3A81FEBD87A0075E196 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = DFE2E3A71FEBD87A0075E196 /* Assets.xcassets */; };
 		DFE2E3AB1FEBD87A0075E196 /* MainMenu.xib in Resources */ = {isa = PBXBuildFile; fileRef = DFE2E3A91FEBD87A0075E196 /* MainMenu.xib */; };
@@ -22,6 +23,8 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
+		2282AEF4207C4949005C6CE1 /* NSWindowSquare.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = NSWindowSquare.h; sourceTree = "<group>"; };
+		2282AEF5207C4949005C6CE1 /* NSWindowSquare.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = NSWindowSquare.m; sourceTree = "<group>"; };
 		DFE2E3A11FEBD87A0075E196 /* IOSurface compositing.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "IOSurface compositing.app"; sourceTree = BUILT_PRODUCTS_DIR; };
 		DFE2E3A41FEBD87A0075E196 /* AppDelegate.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = AppDelegate.h; sourceTree = "<group>"; };
 		DFE2E3A51FEBD87A0075E196 /* AppDelegate.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = AppDelegate.m; sourceTree = "<group>"; };
@@ -83,6 +86,8 @@
 				DFE2E3A51FEBD87A0075E196 /* AppDelegate.m */,
 				DFE2E3CB1FEBE2C60075E196 /* OpenGLContextView.h */,
 				DFE2E3CC1FEBE2C60075E196 /* OpenGLContextView.m */,
+				2282AEF4207C4949005C6CE1 /* NSWindowSquare.h */,
+				2282AEF5207C4949005C6CE1 /* NSWindowSquare.m */,
 				DFE2E3D11FEC03350075E196 /* VSyncListener.h */,
 				DFE2E3D21FEC03350075E196 /* VSyncListener.m */,
 				DFE2E3CE1FEBEDB20075E196 /* OpenGLDrawer.h */,
@@ -184,6 +189,7 @@
 				DFE2E3D01FEBEDB20075E196 /* OpenGLDrawer.m in Sources */,
 				DFE2E3D31FEC03350075E196 /* VSyncListener.m in Sources */,
 				DFE2E3A61FEBD87A0075E196 /* AppDelegate.m in Sources */,
+				2282AEF6207C4949005C6CE1 /* NSWindowSquare.m in Sources */,
 				DFE2E3CD1FEBE2C60075E196 /* OpenGLContextView.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;

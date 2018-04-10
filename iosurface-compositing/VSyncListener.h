@@ -7,9 +7,18 @@
 //
 
 #import <Foundation/Foundation.h>
+#import <CoreVideo/CVDisplayLink.h>
+#import <Cocoa/Cocoa.h>
+
+typedef void (^VCallBack)(void);
 
 @interface VSyncListener : NSObject
+{
+    VCallBack vcallback;
+    CVDisplayLinkRef displayLink;
+}
 
-- (instancetype)initWithCallback:(void (^)(void))callback;
+- (instancetype)initWithCallback:(NSOpenGLContext*) glcontext callback:(void (^)(void))callback;
+- (CVReturn)getFrameForTime:(const CVTimeStamp*)outputTime;
 
 @end
