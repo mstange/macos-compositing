@@ -23,7 +23,7 @@
     GLuint surftex_;
     GLuint surffbo_;
 
-    BOOL useIOSurf;
+    BOOL useIOSurf_;
 }
 
 - (instancetype)initWithFrame:(NSRect)frameRect;
