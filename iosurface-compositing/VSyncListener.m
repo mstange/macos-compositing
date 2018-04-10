@@ -21,23 +21,32 @@ static CVReturn MyDisplayLinkCallback(CVDisplayLinkRef displayLink, const CVTime
 {
     self = [super init];
 
-    vcallback = Block_copy(callback);
+    vcallback_ = Block_copy(callback);
 
-    CVDisplayLinkCreateWithActiveCGDisplays(&displayLink);
-    CVDisplayLinkSetOutputCallback(displayLink, &MyDisplayLinkCallback, self);
+    CVDisplayLinkCreateWithActiveCGDisplays(&displayLink_);
+    CVDisplayLinkSetOutputCallback(displayLink_, &MyDisplayLinkCallback, self);
 
     CGLContextObj cglContext = [glcontext CGLContextObj];
     CGLPixelFormatObj cglPixelFormat = [[glcontext pixelFormat] CGLPixelFormatObj];
-    CVDisplayLinkSetCurrentCGDisplayFromOpenGLContext(displayLink, cglContext, cglPixelFormat);
+    CVDisplayLinkSetCurrentCGDisplayFromOpenGLContext(displayLink_, cglContext, cglPixelFormat);
 
-    CVDisplayLinkStart(displayLink);
+    CVDisplayLinkStart(displayLink_);
 
     return self;
 }
 
+- (void)dealloc
+{
+    CVDisplayLinkStop(displayLink_);
+    CVDisplayLinkRelease(displayLink_);
+    Block_release(vcallback_);
+
+    [super dealloc];
+}
+
 - (CVReturn)getFrameForTime:(const CVTimeStamp*)outputTime
 {
-    vcallback();
+    vcallback_();
     return kCVReturnSuccess;
 }
 

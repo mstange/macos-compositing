@@ -14,8 +14,8 @@ typedef void (^VCallBack)(void);
 
 @interface VSyncListener : NSObject
 {
-    VCallBack vcallback;
-    CVDisplayLinkRef displayLink;
+    VCallBack vcallback_;
+    CVDisplayLinkRef displayLink_;
 }
 
 - (instancetype)initWithCallback:(NSOpenGLContext*) glcontext callback:(void (^)(void))callback;
