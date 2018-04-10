@@ -14,6 +14,7 @@ static const char* kVertexShader =
     "// Input vertex data, different for all executions of this shader.\n"
     "attribute vec2 aPos;\n"
     "uniform float uAngle;\n"
+    "uniform vec4 uRect;\n"
     "varying vec2 vPos;\n"
     "varying mat4 vColorMat;\n"
     "void main(){\n"
@@ -27,11 +28,20 @@ static const char* kVertexShader =
     "  float oneMinusAmount = 1.0 - uAngle;\n"
     "  float c = cos(uAngle * 0.01745329251);\n"
     "  float s = sin(uAngle * 0.01745329251);\n"
-    "  vColorMat = mat4(vec4(lumR + oneMinusLumR * c - lumR * s, lumR - lumR * c + 0.143 * s, lumR - lumR * c - oneMinusLumR * s, 0.0),\n"
-    "                   vec4(lumG - lumG * c - lumG * s, lumG + oneMinusLumG * c + 0.140 * s, lumG - lumG * c + lumG * s, 0.0),\n"
-    "                   vec4(lumB - lumB * c + oneMinusLumB * s, lumB - lumB * c - 0.283 * s, lumB + oneMinusLumB * c + lumB * s, 0.0),\n"
+    "  vColorMat = mat4(vec4(lumR + oneMinusLumR * c - lumR * s,\n"
+    "                        lumR - lumR * c + 0.143 * s,\n"
+    "                        lumR - lumR * c - oneMinusLumR * s,\n"
+    "                        0.0),\n"
+    "                   vec4(lumG - lumG * c - lumG * s,\n"
+    "                        lumG + oneMinusLumG * c + 0.140 * s,\n"
+    "                        lumG - lumG * c + lumG * s,\n"
+    "                        0.0),\n"
+    "                   vec4(lumB - lumB * c + oneMinusLumB * s,\n"
+    "                        lumB - lumB * c - 0.283 * s,\n"
+    "                        lumB + oneMinusLumB * c + lumB * s,\n"
+    "                        0.0),\n"
     "                   vec4(0.0, 0.0, 0.0, 1.0));\n"
-    "  gl_Position = vec4(aPos.x - 1.0, aPos.y - 1.0, 0.0, 1.0);\n"
+    "  gl_Position = vec4(uRect.xy + aPos * uRect.zw, 0.0, 1.0);\n"
     "}\n";
 
 static const char* kFragmentShader =
@@ -53,12 +63,22 @@ static const char* kFragmentShader =
     // Create and compile our GLSL program from the shaders.
     programID_ = [self compileProgramWithVertexShader:kVertexShader fragmentShader:kFragmentShader];
     
+    textureSize_ = NSMakeSize(300, 200);
+    
     // Create a texture
-    texture_ = [self createTextureWithSize:NSMakeSize(300, 200) drawingHandler:^(CGContextRef ctx) {
+    texture_ = [self createTextureWithSize:textureSize_ drawingHandler:^(CGContextRef ctx) {
         NSGraphicsContext* oldGC = [NSGraphicsContext currentContext];
         [NSGraphicsContext setCurrentContext:[NSGraphicsContext graphicsContextWithGraphicsPort:ctx flipped:YES]];
         
-        [[NSImage imageNamed:NSImageNameColorPanel] drawInRect:NSMakeRect(50, 0, 200, 200)
+        CGFloat imageSize = MIN(textureSize_.width, textureSize_.height);
+        NSRect squareInTheMiddleOfTexture = {
+            textureSize_.width / 2 - imageSize / 2,
+            textureSize_.height / 2 - imageSize / 2,
+            imageSize,
+            imageSize
+        };
+        
+        [[NSImage imageNamed:NSImageNameColorPanel] drawInRect:squareInTheMiddleOfTexture
                                                       fromRect:NSZeroRect
                                                      operation:NSCompositingOperationSourceOver
                                                       fraction:1.0];
@@ -66,6 +86,7 @@ static const char* kFragmentShader =
     }];
     textureUniform_ = glGetUniformLocation(programID_, "uSampler");
     angleUniform_ = glGetUniformLocation(programID_, "uAngle");
+    rectUniform_ = glGetUniformLocation(programID_, "uRect");
     
     // Get a handle for our buffers
     posAttribute_ = glGetAttribLocation(programID_, "aPos");
@@ -176,15 +197,24 @@ static const char* kFragmentShader =
     
     glViewport(0, 0, width, height);
     
-    glClearColor(0.0, 0.0, 0.0, 0.0);
+    NSRect wholeViewport = { -1, -1, 1, 1 };
+    
+    glClearColor(0.0, 0.0, 1.0, 1.0);
     glClear(GL_COLOR_BUFFER_BIT);
     
+    glBlendFunc(GL_ONE, GL_ONE_MINUS_SRC_ALPHA);
+    glEnable(GL_BLEND);
+
     glUseProgram(programID_);
     
     glActiveTexture(GL_TEXTURE0);
     glBindTexture(GL_TEXTURE_2D, texture_);
     glUniform1i(textureUniform_, 0);
     glUniform1f(angleUniform_, angle);
+    glUniform4f(rectUniform_,
+                wholeViewport.origin.x, wholeViewport.origin.y,
+                textureSize_.width / width * wholeViewport.size.width,
+                textureSize_.height / height * wholeViewport.size.height);
     
     glEnableVertexAttribArray(posAttribute_);
     glBindBuffer(GL_ARRAY_BUFFER, vertexBuffer_);
@@ -198,6 +228,7 @@ static const char* kFragmentShader =
     
     glDrawArrays(GL_TRIANGLE_STRIP, 0, 4); // 4 indices starting at 0 -> 2 triangles
     
+    glDisable(GL_BLEND);
     glDisableVertexAttribArray(posAttribute_);
     glBindFramebuffer(GL_FRAMEBUFFER, 0);
 }

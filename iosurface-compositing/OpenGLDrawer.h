@@ -15,8 +15,11 @@
     GLuint texture_;
     GLuint textureUniform_;
     GLuint angleUniform_;
+    GLuint rectUniform_;
     GLuint posAttribute_;
     GLuint vertexBuffer_;
+    
+    NSSize textureSize_;
 }
 
 - (instancetype)init;

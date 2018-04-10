@@ -119,7 +119,7 @@ CreateFBOForTexture(GLuint texture)
 {
     self = [super initWithFrame:frameRect];
 
-    useIOSurf_ = YES;
+    useIOSurf_ = NO;
 
     self.wantsBestResolutionOpenGLSurface = YES;
 
