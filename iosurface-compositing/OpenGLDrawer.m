@@ -211,10 +211,13 @@ static const char* kFragmentShader =
     glBindTexture(GL_TEXTURE_2D, texture_);
     glUniform1i(textureUniform_, 0);
     glUniform1f(angleUniform_, angle);
+//    glUniform4f(rectUniform_,
+//                wholeViewport.origin.x, wholeViewport.origin.y,
+//                textureSize_.width / width * wholeViewport.size.width,
+//                textureSize_.height / height * wholeViewport.size.height);
     glUniform4f(rectUniform_,
                 wholeViewport.origin.x, wholeViewport.origin.y,
-                textureSize_.width / width * wholeViewport.size.width,
-                textureSize_.height / height * wholeViewport.size.height);
+                wholeViewport.size.width, wholeViewport.size.height);
     
     glEnableVertexAttribArray(posAttribute_);
     glBindBuffer(GL_ARRAY_BUFFER, vertexBuffer_);

@@ -38,7 +38,7 @@ CreateTextureForIOSurface(CGLContextObj cglContext, IOSurfaceRef surf)
     glGenTextures(1, &texture);
     glBindTexture(GL_TEXTURE_RECTANGLE_ARB, texture);
     CGLError rv =
-    CGLTexImageIOSurface2D(cglContext, GL_TEXTURE_RECTANGLE_ARB, GL_RGB,
+    CGLTexImageIOSurface2D(cglContext, GL_TEXTURE_RECTANGLE_ARB, GL_RGBA,
                            IOSurfaceGetWidth(surf), IOSurfaceGetHeight(surf),
                            GL_BGRA, GL_UNSIGNED_INT_8_8_8_8_REV, surf, 0);
     if (rv != 0) {
@@ -84,7 +84,8 @@ CreateFBOForTexture(GLuint texture)
     [pixelFormat release];
     GLint swapInt = 1;
     [ctx setValues:&swapInt forParameter:NSOpenGLCPSwapInterval];
-    GLint opaque = 0;
+    GLint opaque = [[[NSProcessInfo processInfo] arguments] containsObject:@"--use-opaque-glcontext"] ? 1 : 0;
+    NSLog(@"opaque: %d", opaque);
     [ctx setValues:&opaque forParameter:NSOpenGLCPSurfaceOpacity];
     return [ctx autorelease];
 }
@@ -93,18 +94,16 @@ CreateFBOForTexture(GLuint texture)
 
 @implementation OpenGLContextView
 
-- (instancetype)initWithFrame:(NSRect)frameRect
+- (void)commonInit
 {
-    self = [super initWithFrame:frameRect];
-
-    useIOSurf_ = YES;
+    useIOSurf_ = [[[NSProcessInfo processInfo] arguments] containsObject:@"--use-iosurface"];
     surf_ = NULL;
     surftex_ = 0;
     surffbo_ = 0;
     needsUpdate_ = NO;
-
+    
     self.wantsBestResolutionOpenGLSurface = YES;
-
+    
     compositingThread_ = dispatch_queue_create("org.mozilla.CompositingThread", DISPATCH_QUEUE_SERIAL);
     glContext_ = [[NSOpenGLContext contextForWindow] retain];
     dispatch_sync(compositingThread_, ^{
@@ -112,19 +111,50 @@ CreateFBOForTexture(GLuint texture)
         glDrawer_ = [[OpenGLDrawer alloc] init];
     });
     animator_ = nil;
-
+    
     if (useIOSurf_) {
         CALayer* layer = [CALayer layer];
         layer.contentsGravity = kCAGravityTopLeft;
         layer.contentsScale = 2;
-        // layer.opaque = YES;
+        if ([[[NSProcessInfo processInfo] arguments] containsObject:@"--use-opaque-calayer"]) {
+            [layer setContentsOpaque:YES];
+        }
         
         self.wantsLayer = YES;
         self.layer = layer;
     } else {
         self.wantsLayer = NO;
     }
+    
+    
+    if ([[[NSProcessInfo processInfo] arguments] containsObject:@"--close-after-20-seconds"]) {
+        [self performSelector:@selector(terminate) withObject:nil afterDelay:20.0];
+    }
+}
+
+- (void)terminate
+{
+    [NSApp terminate:self];
+}
+
+- (instancetype)initWithFrame:(NSRect)frameRect
+{
+    self = [super initWithFrame:frameRect];
+    [self commonInit];
     return self;
+}
+
+// This is called when specifying this class as the window's contentView class.
+- (instancetype)initWithCoder:(NSCoder *)decoder
+{
+    self = [super initWithCoder:decoder];
+    [self commonInit];
+    return self;
+}
+
+- (BOOL)isOpaque
+{
+    return YES;
 }
 
 - (void)viewDidMoveToWindow
@@ -140,9 +170,11 @@ CreateFBOForTexture(GLuint texture)
     }];
 
     if (useIOSurf_) {
-        // Make the window's contentView layer-backed. This gives our layer anti-aliased rounded corners.
-        NSView* contentView = [[self window] contentView];
-        contentView.wantsLayer = YES;
+        if ([[[NSProcessInfo processInfo] arguments] containsObject:@"--use-layer-for-content-view"]) {
+            // Make the window's contentView layer-backed. This gives our layer anti-aliased rounded corners.
+            NSView* contentView = [[self window] contentView];
+            contentView.wantsLayer = YES;
+        }
     } else {
         [glContext_ setView:self];
     }
@@ -237,9 +269,12 @@ static float CurrentAngle() { return fmod(CFAbsoluteTimeGetCurrent(), 1.0) * 360
         [glDrawer_ drawToFBO:surffbo_ width:displayWidth_ height:displayHeight_ angle:CurrentAngle()];
         glFlush();
         self.layer.contents = (id)surf_;
-//        self.layer.contentsScale = displayWidth_ / layerBounds_.size.width;
+        if ([[[NSProcessInfo processInfo] arguments] containsObject:@"--use-opaque-calayer"]) {
+            [self.layer setContentsOpaque:YES];
+        }
         [CATransaction commit];
         [CATransaction flush];
+        // NSLog(@"[self.layer.superlayer NS_view]: %@", (id)[self.layer.superlayer.superlayer NS_view] == [[self superview] superview] ? @"YES" : @"NO");
     } else {
         [glContext_ update];
         [glContext_ makeCurrentContext];
