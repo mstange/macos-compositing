@@ -22,11 +22,12 @@ def quote_if_contains_spaces(arg):
 def arg_list_to_command_line_string(args):
     return " ".join(map(quote_if_contains_spaces, args))
 
-open_cmd = ["open", app_bundle_path, "--wait", "--args"] + args
-powerlog_cmd = [powerlog_path, "-file", csv_path, "-cmd", arg_list_to_command_line_string(open_cmd)]
+open_cmd = ["open", app_bundle_path, "--args"] + args
+powerlog_cmd = [powerlog_path, "-file", csv_path, "-duration", "20s"]
 
 FNULL = open(os.devnull, 'w')
 
+subprocess.call(open_cmd)
 subprocess.call(powerlog_cmd, stdout=FNULL)
 
 power_numbers = []

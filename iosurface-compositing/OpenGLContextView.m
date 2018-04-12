@@ -126,7 +126,6 @@ CreateFBOForTexture(GLuint texture)
         self.wantsLayer = NO;
     }
     
-    
     if ([[[NSProcessInfo processInfo] arguments] containsObject:@"--close-after-20-seconds"]) {
         [self performSelector:@selector(terminate) withObject:nil afterDelay:20.0];
     }
@@ -139,6 +138,10 @@ CreateFBOForTexture(GLuint texture)
 
 - (instancetype)initWithFrame:(NSRect)frameRect
 {
+    if ([[[NSProcessInfo processInfo] arguments] containsObject:@"--leave-space-at-bottom"]) {
+        frameRect.size.height -= 10.0;
+        frameRect.origin.y += 10.0;
+    }
     self = [super initWithFrame:frameRect];
     [self commonInit];
     return self;
@@ -209,15 +212,60 @@ CreateFBOForTexture(GLuint texture)
 
 static float CurrentAngle() { return fmod(CFAbsoluteTimeGetCurrent(), 1.0) * 360; }
 
+static NSString* trimStringAfterSubstring(NSString* whole, NSString* substring) {
+    NSRange range = [whole rangeOfString:substring];
+    if (range.location != NSNotFound) {
+        return [whole substringToIndex:range.location + 1];
+    }
+    return whole;
+}
+
+static NSString* compactDescription(id object) {
+    return trimStringAfterSubstring([object description], @">");
+}
+
+static void printCALayerSubtree(CALayer* layer, int depth) {
+    NSLog(@"%*s - %@ [masksToBounds: %@, cornerRadius: %.1f, backgroundColor: %@, opaque: %@, view: %@, contents: %@]",
+          depth * 4, "", layer,
+          [layer masksToBounds] ? @"YES" : @"NO",
+          [layer cornerRadius],
+          compactDescription([layer backgroundColor]),
+          [layer isOpaque] ? @"YES" : @"NO",
+          [layer respondsToSelector:@selector(NS_view)] ? [layer NS_view] : nil,
+          compactDescription([layer contents]));
+    for (CALayer* sublayer in [layer sublayers]) {
+        printCALayerSubtree(sublayer, depth + 1);
+    }
+}
+
+static void printCALayerHierarchy(CALayer* layer) {
+    CALayer* rootLayer = [layer presentationLayer];
+    while ([rootLayer superlayer]) {
+        rootLayer = [rootLayer superlayer];
+    }
+    printCALayerSubtree(rootLayer, 0);
+}
+
 - (void)handleSizeChange
 {
     NSLog(@"handleSizeChange");
     layerBounds_ = self.bounds;
-    NSSize backingSize = [self convertSizeToBacking:self.bounds.size];
+    NSSize backingSize = [self convertSizeToBacking:layerBounds_.size];
     displayWidth_ = (int)backingSize.width;
     displayHeight_ = (int)backingSize.height;
     
     needsUpdate_ = YES;
+    
+    if (useIOSurf_) {
+        // printCALayerHierarchy(self.layer);
+        if ([[[NSProcessInfo processInfo] arguments] containsObject:@"--force-square-corners-on-root-layer"]) {
+            CALayer* rootLayer = self.layer;
+            while ([rootLayer superlayer]) {
+                rootLayer = [rootLayer superlayer];
+            }
+            rootLayer.cornerRadius = 0.0;
+        }
+    }
     
     dispatch_sync(compositingThread_, ^{
         [self compositeOnThisThreadAfterChange];
